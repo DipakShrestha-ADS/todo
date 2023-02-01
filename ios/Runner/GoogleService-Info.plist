@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>862568683445-63aopo4bob2o0sr4pcodc6srvrtupscb.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.862568683445-63aopo4bob2o0sr4pcodc6srvrtupscb</string>
+	<key>API_KEY</key>
+	<string>AIzaSyBJXS-nXLFBABB4oG-8V_nhEB44Zi3S22I</string>
+	<key>GCM_SENDER_ID</key>
+	<string>862568683445</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.dipak.todo.todo</string>
+	<key>PROJECT_ID</key>
+	<string>kashyabgroup</string>
+	<key>STORAGE_BUCKET</key>
+	<string>kashyabgroup.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:862568683445:ios:cc3aa15ea6c1cf24596bfc</string>
+	<key>DATABASE_URL</key>
+	<string>https://kashyabgroup.firebaseio.com</string>
+</dict>
+</plist>

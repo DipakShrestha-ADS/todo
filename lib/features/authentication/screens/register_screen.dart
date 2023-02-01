@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:todo/features/authentication/services/firebase_auth_service.dart';
 import 'package:todo/features/authentication/widgets/custom_form_field.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -19,6 +20,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final formKey = GlobalKey<FormState>();
+  final firebaseAuthService = FirebaseAuthService();
 
   String? emailValidator(String? email) {
     if (email == null) {
@@ -183,7 +185,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           vertical: 20,
                           horizontal: 30,
                         ),
-                        onPressed: () {
+                        onPressed: () async {
                           formKey.currentState?.save();
                           if (formKey.currentState!.validate()) {
                             if (!isChecked) {
@@ -196,6 +198,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             print('name: $name');
                             print('email: $email');
                             print('password: $password');
+                            final userCred = await firebaseAuthService.registerUser(
+                              email: email,
+                              password: password,
+                            );
+                            print('user cred : ${userCred.user!.uid}');
                           } else {
                             print('not valid');
                           }

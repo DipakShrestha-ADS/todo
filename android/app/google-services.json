@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "862568683445",
+    "firebase_url": "https://kashyabgroup.firebaseio.com",
+    "project_id": "kashyabgroup",
+    "storage_bucket": "kashyabgroup.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:862568683445:android:a1fdde2838f63fa1596bfc",
+        "android_client_info": {
+          "package_name": "com.dipak.todo.todo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "862568683445-uc3bs6t1clml5fro2gli523dbc2s2uu0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBu6cojD1J1RQEZ83643g52ZgX3lnD8TH0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "862568683445-uc3bs6t1clml5fro2gli523dbc2s2uu0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
