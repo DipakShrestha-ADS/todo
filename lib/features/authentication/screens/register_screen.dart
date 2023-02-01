@@ -1,6 +1,8 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:todo/features/authentication/models/user_model.dart';
 import 'package:todo/features/authentication/services/firebase_auth_service.dart';
+import 'package:todo/features/authentication/services/firebase_firestore_service.dart';
 import 'package:todo/features/authentication/widgets/custom_form_field.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -21,6 +23,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final passwordController = TextEditingController();
   final formKey = GlobalKey<FormState>();
   final firebaseAuthService = FirebaseAuthService();
+  final firebaseFirestoreService = FirebaseFirestoreService();
 
   String? emailValidator(String? email) {
     if (email == null) {
@@ -197,12 +200,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             final password = passwordController.text;
                             print('name: $name');
                             print('email: $email');
-                            print('password: $password');
-                            final userCred = await firebaseAuthService.registerUser(
+                            // print('password: $password');
+                            // final userCred = await firebaseAuthService.signInUser(
+                            //   email: email,
+                            //   password: password,
+                            // );
+
+                            // print('user logout; ${userCred.user!.uid}');
+                            UserModel user = UserModel(
+                              fullName: name,
                               email: email,
                               password: password,
                             );
-                            print('user cred : ${userCred.user!.uid}');
+                            await firebaseFirestoreService.storeUser(user);
+                            print('user deeleted ');
                           } else {
                             print('not valid');
                           }
