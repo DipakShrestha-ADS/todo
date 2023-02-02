@@ -211,9 +211,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               fullName: name,
                               email: email,
                               password: password,
+                              isValid: true,
                             );
-                            await firebaseFirestoreService.storeUser(user);
-                            print('user deeleted ');
+                            /*await firebaseFirestoreService.updateUser(
+                              userModel: user,
+                              id: 'RgXB1wNJGb644Tm8kAW9',
+                            );*/
+                            /*final userDetail = await firebaseFirestoreService.getUserDetails(
+                              id: 'RgXB1wNJGb644Tm8kAW9',
+                            );*/
+                            final allUser = await firebaseFirestoreService.getAllUsers();
+                            print('user detail: $allUser');
                           } else {
                             print('not valid');
                           }
