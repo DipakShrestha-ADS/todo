@@ -4,6 +4,7 @@ import 'package:todo/features/authentication/models/user_model.dart';
 import 'package:todo/features/authentication/services/firebase_auth_service.dart';
 import 'package:todo/features/authentication/services/firebase_firestore_service.dart';
 import 'package:todo/features/authentication/widgets/custom_form_field.dart';
+import 'package:todo/features/authentication/widgets/custom_loader.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({Key? key}) : super(key: key);
@@ -189,6 +190,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           horizontal: 30,
                         ),
                         onPressed: () async {
+                          CustomLoader.showMyLoader(context);
                           formKey.currentState?.save();
                           if (formKey.currentState!.validate()) {
                             if (!isChecked) {
