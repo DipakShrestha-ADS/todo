@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:todo/features/authentication/screens/register_screen.dart';
+import 'package:todo/features/dashboard/screens/home_page.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -15,6 +16,9 @@ class _HomeScreenState extends State<HomeScreen> {
       routes: {
         '/register': (ctx) {
           return RegisterScreen();
+        },
+        '/home': (ctx) {
+          return HomePage();
         },
       },
       initialRoute: '/register',

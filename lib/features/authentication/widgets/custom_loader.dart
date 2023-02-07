@@ -12,16 +12,21 @@ class CustomLoader {
           child: Scaffold(
             backgroundColor: Colors.transparent,
             body: Center(
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                width: 100,
-                height: 100,
-                child: Center(
-                  child: CircularProgressIndicator(
-                    color: Colors.deepPurpleAccent,
+              child: GestureDetector(
+                onTap: () {
+                  print('loader clicked');
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  height: 100,
+                  width: 100,
+                  child: Center(
+                    child: CircularProgressIndicator(
+                      color: Colors.deepPurpleAccent,
+                    ),
                   ),
                 ),
               ),

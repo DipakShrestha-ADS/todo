@@ -184,66 +184,75 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         ),
                         borderRadius: BorderRadius.circular(40),
                       ),
-                      child: MaterialButton(
-                        padding: EdgeInsets.symmetric(
-                          vertical: 20,
-                          horizontal: 30,
-                        ),
-                        onPressed: () async {
-                          CustomLoader.showMyLoader(context);
-                          formKey.currentState?.save();
-                          if (formKey.currentState!.validate()) {
-                            if (!isChecked) {
-                              print('terms and condition not agreed');
+                      child: Builder(builder: (context) {
+                        return MaterialButton(
+                          padding: EdgeInsets.symmetric(
+                            vertical: 20,
+                            horizontal: 30,
+                          ),
+                          onPressed: () async {
+                            formKey.currentState?.save();
+                            if (formKey.currentState!.validate()) {
+                              if (!isChecked) {
+                                print('terms and condition not agreed');
+                              }
+                              print('valid');
+                              final name = nameController.text;
+                              final email = emailController.text;
+                              final password = passwordController.text;
+                              print('name: $name');
+                              print('email: $email');
+                              UserModel user = UserModel(
+                                fullName: name,
+                                email: email,
+                                password: password,
+                                isValid: isChecked,
+                              );
+                              CustomLoader.showMyLoader(context);
+                              final userCredential = await firebaseAuthService.registerUser(
+                                email: email,
+                                password: password,
+                              );
+                              await firebaseFirestoreService.storeUser(user);
+                              Navigator.pop(context);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    'Registered successfully!',
+                                    style: TextStyle(
+                                      color: Colors.deepPurpleAccent,
+                                    ),
+                                  ),
+                                  backgroundColor: Colors.white,
+                                ),
+                              );
+                              print('user detail: $userCredential');
+                              Navigator.pushReplacementNamed(
+                                context,
+                                '/home',
+                                arguments: userCredential,
+                              );
+                            } else {
+                              print('not valid');
                             }
-                            print('valid');
-                            final name = nameController.text;
-                            final email = emailController.text;
-                            final password = passwordController.text;
-                            print('name: $name');
-                            print('email: $email');
-                            // print('password: $password');
-                            // final userCred = await firebaseAuthService.signInUser(
-                            //   email: email,
-                            //   password: password,
-                            // );
-
-                            // print('user logout; ${userCred.user!.uid}');
-                            UserModel user = UserModel(
-                              fullName: name,
-                              email: email,
-                              password: password,
-                              isValid: true,
-                            );
-                            /*await firebaseFirestoreService.updateUser(
-                              userModel: user,
-                              id: 'RgXB1wNJGb644Tm8kAW9',
-                            );*/
-                            /*final userDetail = await firebaseFirestoreService.getUserDetails(
-                              id: 'RgXB1wNJGb644Tm8kAW9',
-                            );*/
-                            final allUser = await firebaseFirestoreService.getAllUsers();
-                            print('user detail: $allUser');
-                          } else {
-                            print('not valid');
-                          }
-                        },
-                        child: Text(
-                          'CREATE ACCOUNT',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
+                          },
+                          child: Text(
+                            'CREATE ACCOUNT',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                            ),
                           ),
-                        ),
-                        splashColor: Colors.white.withOpacity(
-                          0.4,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(
-                            40,
+                          splashColor: Colors.white.withOpacity(
+                            0.4,
                           ),
-                        ),
-                      ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(
+                              40,
+                            ),
+                          ),
+                        );
+                      }),
                     ),
                     getVerticalSpacing(
                       height: 20,
