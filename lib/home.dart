@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:todo/features/authentication/screens/login_screen.dart';
 import 'package:todo/features/authentication/screens/register_screen.dart';
 import 'package:todo/features/dashboard/screens/home_page.dart';
 import 'package:todo/features/dashboard/widgets/user_details_card.dart';
@@ -23,6 +24,9 @@ class _HomeScreenState extends State<HomeScreen> {
         },
         '/profile': (ctx) {
           return UserDetailsCard();
+        },
+        '/login': (ctx) {
+          return LoginScreen();
         },
       },
       initialRoute: '/register',

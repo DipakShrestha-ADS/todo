@@ -1,19 +1,21 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:todo/features/authentication/models/user_model.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:todo/features/authentication/services/firebase_auth_service.dart';
 import 'package:todo/features/authentication/services/firebase_firestore_service.dart';
 import 'package:todo/features/authentication/widgets/custom_form_field.dart';
 import 'package:todo/features/authentication/widgets/custom_loader.dart';
 
-class RegisterScreen extends StatefulWidget {
-  const RegisterScreen({Key? key}) : super(key: key);
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({Key? key}) : super(key: key);
 
   @override
-  State<RegisterScreen> createState() => _RegisterScreenState();
+  State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _RegisterScreenState extends State<RegisterScreen> {
+class _LoginScreenState extends State<LoginScreen> {
   Widget getVerticalSpacing({double? height}) => SizedBox(
         height: height ?? 20,
       );
@@ -82,24 +84,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         fontSize: 20,
                       ),
                     ),
-                    getVerticalSpacing(height: 30),
-                    CustomFormField(
-                      hintText: 'Name',
-                      iconData: Icons.account_circle_outlined,
-                      controller: nameController,
-                      validator: (val) {
-                        if (val == null) {
-                          return 'Name is required';
-                        }
-                        if (val.isEmpty) {
-                          return 'Name must not be empty';
-                        }
-                        if (val.length < 3) {
-                          return 'Name length must be greater than 3';
-                        }
-                        return null;
-                      },
-                    ),
                     getVerticalSpacing(),
                     CustomFormField(
                       hintText: 'E-Mail',
@@ -121,55 +105,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         });
                       },
                       validator: passwordValidator,
-                    ),
-                    getVerticalSpacing(),
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Checkbox(
-                            value: isChecked,
-                            onChanged: (value) {
-                              setState(() {
-                                isChecked = value ?? false;
-                              });
-                            },
-                            checkColor: Colors.deepPurpleAccent,
-                            fillColor: MaterialStateProperty.all(
-                              Colors.transparent,
-                            ),
-                            side: BorderSide(
-                              color: Colors.deepPurpleAccent,
-                            ),
-                            overlayColor: MaterialStateProperty.all(
-                              Colors.deepPurpleAccent.withOpacity(
-                                0.4,
-                              ),
-                            ),
-                          ),
-                          Text.rich(
-                            TextSpan(
-                              text: 'I read and agree to ',
-                              style: TextStyle(
-                                color: Colors.black54,
-                              ),
-                              children: [
-                                TextSpan(
-                                  text: 'Terms & Condition',
-                                  style: TextStyle(
-                                    color: Colors.deepPurpleAccent,
-                                  ),
-                                  recognizer: TapGestureRecognizer()
-                                    ..onTap = () {
-                                      print('terms and condition clicked');
-                                    },
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
                     ),
                     getVerticalSpacing(
                       height: 30,
@@ -193,51 +128,45 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           onPressed: () async {
                             formKey.currentState?.save();
                             if (formKey.currentState!.validate()) {
-                              if (!isChecked) {
-                                print('terms and condition not agreed');
+                              try {
+                                final email = emailController.text;
+                                final password = passwordController.text;
+                                print('email: $email');
+                                CustomLoader.showMyLoader(context);
+
+                                ///Todo: login here
+                                final userCred = await firebaseAuthService.signInUser(email: email, password: password);
+                                Navigator.pop(context);
+
+                                SharedPreferences sp = await SharedPreferences.getInstance();
+                                final token = await userCred.user!.getIdToken();
+
+                                if (token != null) {
+                                  showSnackBar(
+                                    message: 'Cannot login since token is null!',
+                                    context: context,
+                                    backgroundColor: Colors.white,
+                                  );
+                                  return;
+                                }
+                                // sp.setString('Token', token);
+                                /*Navigator.pushNamedAndRemoveUntil(
+                                  context,
+                                  '/home',
+                                  (route) {
+                                    return false;
+                                  },
+                                );*/
+                              } on FirebaseException catch (fe) {
+                                print('firebase exception : ${fe.message}');
+                                Navigator.pop(context);
                               }
-                              print('valid');
-                              final name = nameController.text;
-                              final email = emailController.text;
-                              final password = passwordController.text;
-                              print('name: $name');
-                              print('email: $email');
-                              UserModel user = UserModel(
-                                fullName: name,
-                                email: email,
-                                password: password,
-                                isValid: isChecked,
-                              );
-                              CustomLoader.showMyLoader(context);
-                              final userCredential = await firebaseAuthService.registerUser(
-                                email: email,
-                                password: password,
-                              );
-                              await firebaseFirestoreService.storeUser(user);
-                              Navigator.pop(context);
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                    'Registered successfully!',
-                                    style: TextStyle(
-                                      color: Colors.deepPurpleAccent,
-                                    ),
-                                  ),
-                                  backgroundColor: Colors.white,
-                                ),
-                              );
-                              print('user detail: $userCredential');
-                              Navigator.pushReplacementNamed(
-                                context,
-                                '/home',
-                                arguments: userCredential,
-                              );
                             } else {
                               print('not valid');
                             }
                           },
                           child: Text(
-                            'CREATE ACCOUNT',
+                            'Login',
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 16,
@@ -259,20 +188,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                     Text.rich(
                       TextSpan(
-                        text: 'Already have and account? ',
+                        text: 'Don\'t have an account? ',
                         style: TextStyle(
                           color: Colors.black54,
                         ),
                         children: [
                           TextSpan(
-                            text: 'Sign In',
+                            text: 'Register',
                             style: TextStyle(
                               color: Colors.deepPurpleAccent,
                             ),
                             recognizer: TapGestureRecognizer()
                               ..onTap = () {
-                                print('sign in clicked');
-                                Navigator.pushNamed(context, '/login');
+                                Navigator.pushNamed(context, '/register');
                               },
                           ),
                         ],
@@ -284,6 +212,24 @@ class _RegisterScreenState extends State<RegisterScreen> {
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  void showSnackBar({
+    required String message,
+    required BuildContext context,
+    Color? backgroundColor,
+  }) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          message,
+          style: TextStyle(
+            color: Colors.deepPurpleAccent,
+          ),
+        ),
+        backgroundColor: backgroundColor ?? Colors.white,
       ),
     );
   }
