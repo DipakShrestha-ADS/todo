@@ -229,7 +229,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               print('user detail: $userCredential');
                               Navigator.pushReplacementNamed(
                                 context,
-                                '/home',
+                                '/login',
                                 arguments: userCredential,
                               );
                             } else {

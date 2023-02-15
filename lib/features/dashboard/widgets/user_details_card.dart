@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:todo/features/authentication/services/firebase_auth_service.dart';
+import 'package:todo/features/authentication/widgets/custom_loader.dart';
 import 'package:todo/features/dashboard/services/firebase_storage_service.dart';
 
 class UserDetailsCard extends StatelessWidget {
@@ -11,6 +14,30 @@ class UserDetailsCard extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.deepPurpleAccent,
         title: Text('User Details'),
+        actions: [
+          IconButton(
+            onPressed: () async {
+              try {
+                CustomLoader.showMyLoader(context);
+                await FirebaseAuthService().logoutUser();
+                final sp = await SharedPreferences.getInstance();
+                await sp.remove('Token');
+                Navigator.pop(context);
+                Navigator.pushNamedAndRemoveUntil(
+                  context,
+                  '/login',
+                  (route) => false,
+                );
+              } catch (e) {
+                print("error in login: $e");
+              }
+            },
+            icon: const Icon(
+              Icons.logout,
+              color: Colors.white,
+            ),
+          ),
+        ],
       ),
       body: Column(
         children: [

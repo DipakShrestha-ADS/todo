@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:todo/features/authentication/services/firebase_firestore_service.dart';
 
 class HomePage extends StatelessWidget {
@@ -17,10 +16,7 @@ class HomePage extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          // Navigator.pushNamed(context, '/profile');
-          SharedPreferences sp = await SharedPreferences.getInstance();
-          final token = sp.getString('Token');
-          print('token in sp: $token');
+          Navigator.pushNamed(context, '/profile');
         },
         backgroundColor: Colors.deepPurpleAccent,
         child: const Icon(

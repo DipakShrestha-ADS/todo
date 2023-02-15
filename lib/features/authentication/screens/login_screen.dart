@@ -56,6 +56,50 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+  Future<void> login() async {
+    formKey.currentState?.save();
+    if (formKey.currentState!.validate()) {
+      try {
+        final email = emailController.text;
+        final password = passwordController.text;
+        print('email: $email');
+        CustomLoader.showMyLoader(context);
+
+        final userCred = await firebaseAuthService.signInUser(email: email, password: password);
+        Navigator.pop(context);
+        final isEmailVerified = userCred.user!.emailVerified;
+        print('isEmail Verified: $isEmailVerified');
+        if (!isEmailVerified) {
+          await userCred.user!.sendEmailVerification();
+          showSnackBar(
+            message: 'Your email is not verified, please verify your email first. We have sent you a verification email on your email address',
+            context: context,
+            backgroundColor: Colors.white,
+          );
+          return;
+        }
+        SharedPreferences sp = await SharedPreferences.getInstance();
+        final token = await userCred.user!.getIdToken();
+        print('token :$token');
+
+        sp.setString('Token', token);
+
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          '/home',
+          (route) {
+            return false;
+          },
+        );
+      } on FirebaseException catch (fe) {
+        print('firebase exception : ${fe.message}');
+        Navigator.pop(context);
+      }
+    } else {
+      print('not valid');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -125,46 +169,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             vertical: 20,
                             horizontal: 30,
                           ),
-                          onPressed: () async {
-                            formKey.currentState?.save();
-                            if (formKey.currentState!.validate()) {
-                              try {
-                                final email = emailController.text;
-                                final password = passwordController.text;
-                                print('email: $email');
-                                CustomLoader.showMyLoader(context);
-
-                                ///Todo: login here
-                                final userCred = await firebaseAuthService.signInUser(email: email, password: password);
-                                Navigator.pop(context);
-
-                                SharedPreferences sp = await SharedPreferences.getInstance();
-                                final token = await userCred.user!.getIdToken();
-
-                                if (token != null) {
-                                  showSnackBar(
-                                    message: 'Cannot login since token is null!',
-                                    context: context,
-                                    backgroundColor: Colors.white,
-                                  );
-                                  return;
-                                }
-                                // sp.setString('Token', token);
-                                /*Navigator.pushNamedAndRemoveUntil(
-                                  context,
-                                  '/home',
-                                  (route) {
-                                    return false;
-                                  },
-                                );*/
-                              } on FirebaseException catch (fe) {
-                                print('firebase exception : ${fe.message}');
-                                Navigator.pop(context);
-                              }
-                            } else {
-                              print('not valid');
-                            }
-                          },
+                          onPressed: login,
                           child: Text(
                             'Login',
                             style: TextStyle(
